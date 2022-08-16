@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MySQLDataSet
@@ -46,6 +43,7 @@ namespace MySQLDataSet
         }
         public static string[] ExcludeList = { " ", ";", ",", "(", ")" };
 
+        //关键字高亮关键函数
         private static void SHLFun(RichTextBox trb, Color c, int lineIndex, int foucusIndex)
         {
             int firstIndex = trb.GetFirstCharIndexFromLine(lineIndex);//当前行第一个字符索引
@@ -74,7 +72,6 @@ namespace MySQLDataSet
         public static void SetHightLight(RichTextBox trb, Color c, int textLineHeight)
         {
             //获取当前光标索引
-            trb.SelectionStart = trb.TextLength;
             int foucusIndex = trb.SelectionStart;
 
             if (trb.Lines.Length <= 0) return;
@@ -116,29 +113,23 @@ namespace MySQLDataSet
                 tables_show.ReadOnly = false;
                 tables_show.AllowUserToAddRows = true;
             }
-            else if (command.IndexOf("insert", StringComparison.OrdinalIgnoreCase) > -1)
-            {
-                //往数据库插入数据
-                DgvSQL.showMessage(messageText, "插入数据", DgvSQL.Msg);
-            }
-            else if (command.IndexOf("update", StringComparison.OrdinalIgnoreCase) > -1)
-            {
-                //更新数据库
-                DgvSQL.showMessage(messageText, "更新数据", DgvSQL.Msg);
-            }
-            else if (command.IndexOf("DELETE", StringComparison.OrdinalIgnoreCase) > -1)
-            {
-                //删除某一行数据
-                DgvSQL.showMessage(messageText, "删除一行数据", DgvSQL.Msg);
-            }
-            else if(command.IndexOf("CREATE", StringComparison.OrdinalIgnoreCase) > -1)
-            {
-                //新建表单
-                DgvSQL.showMessage(messageText, "新建表单", DgvSQL.Msg);
-            }
             else
             {
-                DgvSQL.showMessage(messageText, "未知命令" + command, DgvSQL.Error);
+                try
+                {
+                    var rt = mysqlDB.Exute(command, Dbcon);
+                    if (rt != -1)
+                    {
+                        DgvSQL.showMessage(messageText, "成功:" + command, DgvSQL.Ok);
+                    }
+                    else
+                    {
+                        DgvSQL.showMessage(messageText, "失败:" + command, DgvSQL.Error);
+                    }
+                }catch(Exception ex)
+                {
+                    DgvSQL.showMessage(messageText, ex.Message, DgvSQL.Error);
+                }
             }
         }
 

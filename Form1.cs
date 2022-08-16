@@ -1,19 +1,13 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace MySQLDataSet
 {
-    public partial class Form1 : Form
+    public partial class mainForm : Form
     {
-        public Form1()
+        public mainForm()
         {
             InitializeComponent();
             statusText.AppendText("未连接数据库。\r\n");
@@ -56,7 +50,10 @@ namespace MySQLDataSet
             links.Dispose();
             return true;
         }
-
+        /// <summary>
+        /// 脚本编辑器
+        /// </summary>
+        /// <param name="sscript"></param>
         private void EditScript(showScript sscript)
         {
             if (sscript.ShowDialog() == DialogResult.OK)
@@ -67,7 +64,11 @@ namespace MySQLDataSet
                     //检查是否为空格或者多个空格
                     if (!string.IsNullOrWhiteSpace(command))
                     {
-                        KeyWordHightLight.CommandAction(command, tables_show, messageText, Dbcon);
+                        string comd = Regex.Replace(command, @"[\r\n]", "");
+                        //debug用文本状态检测
+                        //DgvSQL.showMessage(messageText, comd, DgvSQL.Msg);
+                        //执行命令
+                        KeyWordHightLight.CommandAction(comd, tables_show, messageText, Dbcon);
                     }
                 }
             }
@@ -83,10 +84,10 @@ namespace MySQLDataSet
                 DgvSQL.DBshow(Dbcon, database_tree);
             }
         }
-
+        //窗口关闭
         private void closeBt_Click(object sender, EventArgs e)
         {
-            System.Environment.Exit(0);
+            Environment.Exit(0);
         }
 
         //数据库刷新
@@ -113,13 +114,17 @@ namespace MySQLDataSet
                 "  `idnew_table` INT NOT NULL,\r\n" +
                 "  `new_tablecol` VARCHAR(45) NULL,\r\n" +
                 "  PRIMARY KEY (`idnew_table`));";
+            script.sqlScript.SelectionStart = script.sqlScript.TextLength;
             EditScript(script);
-
         }
 
         private void deltable_Click(object sender, EventArgs e)
         {
             //删除表单
+            TreeNode select_node = database_tree.SelectedNode;
+            showScript script = new showScript();
+            script.sqlScript.Text = string.Format("DROP TABLE `{0}`.{1};", select_node.Parent.Text, select_node.Text);
+            EditScript(script);
         }
 
         //脚本编辑器
@@ -127,25 +132,36 @@ namespace MySQLDataSet
         {
             EditScript(new showScript());
         }
-
+        //数据库结构点击事件
         private void database_tree_MouseClick(object sender, MouseEventArgs e)
         {
             TreeNode select_node = database_tree.GetNodeAt(e.X, e.Y);
-            //表单选择项过滤
-            if (select_node.Level == 1)
+            //判断选中的结点是否为空
+            if (select_node != null)
             {
-                //选中的是数据库
-                database_tree.ContextMenuStrip = db_cms;
+                //选中该节点
+                database_tree.SelectedNode = select_node;
+                //表单选择项过滤
+                if (select_node.Level == 1)
+                {
+                    //选中的是数据库
+                    database_tree.ContextMenuStrip = db_cms;
+                }
+                else if (select_node.Level == 2)
+                {
+                    //选中的是表单，更新右键菜单栏
+                    database_tree.ContextMenuStrip = tableRightClick;
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        DgvSQL dgvsql = new DgvSQL();
+                        dgvsql.fresh_table_grid(select_node, tables_show, Dbcon, messageText);
+                        //表格状态更新
+                        tables_show.ReadOnly = false;
+                        tables_show.AllowUserToAddRows = true;
+                    }
+                }
             }
-            else if (select_node.Level == 2)
-            {
-                //选中的是表单
-                database_tree.ContextMenuStrip = tableRightClick;
-                DgvSQL dgvsql = new DgvSQL();
-                dgvsql.fresh_table_grid(select_node, tables_show, Dbcon, messageText);
-                tables_show.ReadOnly = false;
-                tables_show.AllowUserToAddRows = true;
-            }
+            
         }
         /// <summary>
         /// 表格更新
@@ -155,12 +171,6 @@ namespace MySQLDataSet
         private void apply_Click(object sender, EventArgs e)
         {
             DgvSQL.showMessage(messageText, string.Format("添加的行索引{0}", tables_show.NewRowIndex), DgvSQL.Msg);
-            DgvSQL.showMessage(messageText, string.Format("现有行{0}", tables_show.Rows.Count), DgvSQL.Msg);
-        }
-
-        private void tables_show_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            
         }
 
         private void tables_show_CellValueChanged(object sender, DataGridViewCellEventArgs e)

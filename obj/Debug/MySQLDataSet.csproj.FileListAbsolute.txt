@@ -25,7 +25,6 @@ D:\project\programe\Csharp\MySQLDataSet\bin\Debug\System.Memory.xml
 D:\project\programe\Csharp\MySQLDataSet\bin\Debug\System.Numerics.Vectors.xml
 D:\project\programe\Csharp\MySQLDataSet\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.csproj.AssemblyReference.cache
-D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.Form1.resources
 D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.login.resources
 D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.Properties.Resources.resources
 D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.csproj.GenerateResource.cache
@@ -34,3 +33,4 @@ D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.csproj.CopyComple
 D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.exe
 D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.pdb
 D:\project\programe\Csharp\MySQLdataSet\obj\Debug\MySQLDataSet.showScript.resources
+D:\project\programe\Csharp\MySQLdataSet\obj\Debug\MySQLDataSet.mainForm.resources

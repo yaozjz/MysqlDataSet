@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MySQLDataSet
@@ -38,7 +36,6 @@ namespace MySQLDataSet
             if (vs.Any())
             {
                 database_and_table_names = vs;
-                showMessage(messageText, database_and_table_names[0], Msg);
             }
             try
             {

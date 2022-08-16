@@ -68,6 +68,5 @@ namespace MySQLDataSet
                 passwd_text.PasswordChar = '*';
             }
         }
-
     }
 }
