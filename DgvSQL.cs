@@ -10,10 +10,14 @@ namespace MySQLDataSet
 {
     class DgvSQL
     {
-        public const int Error = 1;
-        public const int Ok = 0;
-        public const int Msg = 2;
+        public enum ErrorCode { Ok = 0, Error = 1, Msg = 2 };
         public static List<string> database_and_table_names = new List<string>();
+        public static int rowsCount = 0;
+
+        //表单结构
+        public static Dictionary<int, Dictionary<string, string>> rowsTruct = new Dictionary<int, Dictionary<string, string>>();
+        public static List<int> newInsert = new List<int>();
+
         /// <summary>
         /// 表单刷新
         /// </summary>
@@ -21,7 +25,7 @@ namespace MySQLDataSet
         /// <param name="Dgv"></param>
         /// <param name="Dbcon"></param>
         /// <param name="messageText"></param>
-        public void fresh_table_grid(TreeNode Tv, DataGridView Dgv, MySqlConnection Dbcon, DataGridView messageText)
+        public static void fresh_table_grid(TreeNode Tv, DataGridView Dgv, MySqlConnection Dbcon, DataGridView messageText)
         {
             Dgv.DataSource = null;
             string sqlStr = string.Format("SELECT * FROM {0}.{1}", Tv.Parent.Text, Tv.Text);
@@ -44,13 +48,16 @@ namespace MySQLDataSet
                 sda.Fill(ds, "t");
                 //Dgv.EditMode = DataGridViewEditMode.EditOnEnter;//单击单元格编辑
                 Dgv.DataSource = ds.Tables["t"];
-                showMessage(messageText, command, Ok);
+                //更新当前表格行数
+                rowsCount = Dgv.Rows.Count;
+                showMessage(messageText, command, ErrorCode.Ok);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                showMessage(messageText, ex.Message, Error);
+                showMessage(messageText, ex.Message, ErrorCode.Error);
             }
-            
+            rowsTruct.Clear();
+            newInsert.Clear();
             rt.Dispose();
         }
 
@@ -60,21 +67,21 @@ namespace MySQLDataSet
         /// <param name="messageText">对象指向一个DataGridView控件</param>
         /// <param name="msg"></param>
         /// <param name="ErrorCode">0为ok，1为Error</param>
-        public static void showMessage(DataGridView messageText, string msg, int ErrorCode)
+        public static void showMessage(DataGridView messageText, string msg, ErrorCode ec)
         {
-            if (ErrorCode == 0)
+            if ((int)ec == 0)
             {
                 string[] mssg = { DateTime.Now.ToString("HH:mm:ss"), "ok", msg };
                 messageText.Rows.Add(mssg);
             }
-            else if (ErrorCode == 1)
+            else if ((int)ec == 1)
             {
                 string[] mssg = { DateTime.Now.ToString("HH:mm:ss"), "Error", msg };
                 messageText.Rows.Add(mssg);
                 int count_rows = messageText.Rows.Count;
                 messageText.Rows[count_rows - 1].DefaultCellStyle.ForeColor = Color.Red;
             }
-            else if (ErrorCode == 2)
+            else if ((int)ec == 2)
             {
                 string[] mssg = { DateTime.Now.ToString("HH:mm:ss"), "消息", msg };
                 messageText.Rows.Add(mssg);
@@ -115,5 +122,7 @@ namespace MySQLDataSet
                 dr2.Close();
             }
         }
+
+
     }
 }

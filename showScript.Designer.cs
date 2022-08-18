@@ -181,8 +181,10 @@ namespace MySQLDataSet
             this.Font = new System.Drawing.Font("幼圆", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Name = "showScript";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "数据库执行脚本";
             this.Activated += new System.EventHandler(this.showScript_Activated);
+            this.Load += new System.EventHandler(this.showScript_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);

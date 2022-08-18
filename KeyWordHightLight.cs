@@ -27,7 +27,7 @@ namespace MySQLDataSet
             list.Add("if");
             list.Add("not");
             list.Add("INT");
-            list.Add("VARCHAR");
+            list.Add("varchar");
             list.Add("exists");
             list.Add("null");
             list.Add("insert");
@@ -38,6 +38,8 @@ namespace MySQLDataSet
             list.Add("PRIMARY");
             list.Add("key");
             list.Add("SCHEMA");
+            list.Add("alter");
+            list.Add("after");
             //list.Add("");
             return list;
         }
@@ -120,15 +122,15 @@ namespace MySQLDataSet
                     var rt = mysqlDB.Exute(command, Dbcon);
                     if (rt != -1)
                     {
-                        DgvSQL.showMessage(messageText, "成功:" + command, DgvSQL.Ok);
+                        DgvSQL.showMessage(messageText, "成功:" + command, DgvSQL.ErrorCode.Ok);
                     }
                     else
                     {
-                        DgvSQL.showMessage(messageText, "失败:" + command, DgvSQL.Error);
+                        DgvSQL.showMessage(messageText, "失败:" + command, DgvSQL.ErrorCode.Error);
                     }
                 }catch(Exception ex)
                 {
-                    DgvSQL.showMessage(messageText, ex.Message, DgvSQL.Error);
+                    DgvSQL.showMessage(messageText, ex.Message, DgvSQL.ErrorCode.Error);
                 }
             }
         }

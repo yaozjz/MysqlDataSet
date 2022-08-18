@@ -9,7 +9,6 @@ namespace MySQLDataSet
         public showScript()
         {
             InitializeComponent();
-            textLineHeight = sqlScript.Lines.Length;
         }
         public int textLineHeight = 0;
 
@@ -48,7 +47,12 @@ namespace MySQLDataSet
         private void showScript_Activated(object sender, EventArgs e)
         {
             sqlScript.Focus();
+        }
+        //加载窗体时更新状态
+        private void showScript_Load(object sender, EventArgs e)
+        {
             KeyWordHightLight.SetHightLight(sqlScript, Color.Blue, 0);
+            textLineHeight = sqlScript.Lines.Length;
         }
     }
 }

@@ -73,6 +73,9 @@ namespace MySQLDataSet
             this.刷新ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.添加表单ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deltable = new System.Windows.Forms.ToolStripMenuItem();
+            this.table_Rclick = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.freash_grid = new System.Windows.Forms.ToolStripMenuItem();
+            this.delete_Rows = new System.Windows.Forms.ToolStripMenuItem();
             this.msdb.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -97,6 +100,7 @@ namespace MySQLDataSet
             this.statusStrip2.SuspendLayout();
             this.db_cms.SuspendLayout();
             this.tableRightClick.SuspendLayout();
+            this.table_Rclick.SuspendLayout();
             this.SuspendLayout();
             // 
             // msdb
@@ -352,6 +356,7 @@ namespace MySQLDataSet
             this.tables_show.RowTemplate.Height = 23;
             this.tables_show.Size = new System.Drawing.Size(643, 283);
             this.tables_show.TabIndex = 0;
+            this.tables_show.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.tables_show_CellMouseUp);
             this.tables_show.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.tables_show_CellValueChanged);
             // 
             // panel1
@@ -525,6 +530,28 @@ namespace MySQLDataSet
             this.deltable.Text = "删除表单";
             this.deltable.Click += new System.EventHandler(this.deltable_Click);
             // 
+            // table_Rclick
+            // 
+            this.table_Rclick.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.freash_grid,
+            this.delete_Rows});
+            this.table_Rclick.Name = "table_Rclick";
+            this.table_Rclick.Size = new System.Drawing.Size(137, 48);
+            // 
+            // freash_grid
+            // 
+            this.freash_grid.Name = "freash_grid";
+            this.freash_grid.Size = new System.Drawing.Size(136, 22);
+            this.freash_grid.Text = "刷新表格";
+            this.freash_grid.Click += new System.EventHandler(this.freash_grid_Click);
+            // 
+            // delete_Rows
+            // 
+            this.delete_Rows.Name = "delete_Rows";
+            this.delete_Rows.Size = new System.Drawing.Size(136, 22);
+            this.delete_Rows.Text = "删除当前行";
+            this.delete_Rows.Click += new System.EventHandler(this.delete_Rows_Click);
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -570,6 +597,7 @@ namespace MySQLDataSet
             this.statusStrip2.PerformLayout();
             this.db_cms.ResumeLayout(false);
             this.tableRightClick.ResumeLayout(false);
+            this.table_Rclick.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -616,6 +644,9 @@ namespace MySQLDataSet
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button apply;
+        private System.Windows.Forms.ContextMenuStrip table_Rclick;
+        private System.Windows.Forms.ToolStripMenuItem freash_grid;
+        private System.Windows.Forms.ToolStripMenuItem delete_Rows;
     }
 }
 
