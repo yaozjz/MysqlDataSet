@@ -34,3 +34,4 @@ D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.exe
 D:\project\programe\Csharp\MySQLDataSet\obj\Debug\MySQLDataSet.pdb
 D:\project\programe\Csharp\MySQLdataSet\obj\Debug\MySQLDataSet.showScript.resources
 D:\project\programe\Csharp\MySQLdataSet\obj\Debug\MySQLDataSet.mainForm.resources
+D:\project\programe\Csharp\MySQLdataSet\obj\Debug\MySQLDataSet.AddTable.resources

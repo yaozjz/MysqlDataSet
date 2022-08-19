@@ -111,12 +111,52 @@ namespace MySQLDataSet
 
         private void add_table_Click(object sender, EventArgs e)
         {
+            string dbName;
+            string sqlStr = "";
+            AddTable addTable = new AddTable();
+            if (database_tree.SelectedNode.Level == 1)
+                dbName = database_tree.SelectedNode.Text;
+            else dbName = database_tree.SelectedNode.Parent.Text;
+            addTable.schema.Text = dbName;
+            if (addTable.ShowDialog() == DialogResult.OK)
+            {
+                string sql = string.Format("CREATE TABLE `{0}`.`{1}` (\r\n", dbName, addTable.tableName.Text);
+                string primaryKeysSql = "";
+                string OnlyIndex = "";
+                for (int i = 0; i < addTable.tableData.Rows.Count - 1; i++)
+                {
+                    string columnsName = addTable.tableData.Rows[i].Cells[0].Value.ToString();
+                    string dataType = addTable.tableData.Rows[i].Cells[1].Value.ToString();
+                    bool notNull = Convert.ToBoolean(addTable.tableData.Rows[i].Cells[3].EditedFormattedValue);
+                    bool unsignedChar = Convert.ToBoolean(addTable.tableData.Rows[i].Cells[5].EditedFormattedValue);
+                    sql += string.Format("  `{0}` {1} ", columnsName, dataType);
+                    if (unsignedChar)
+                        sql += "UNSIGNED ";
+                    if (notNull)
+                        sql += "NOT ";
+                    sql += "NULL,\r\n";
+                    //额外添加部分
+                    bool PK = Convert.ToBoolean(addTable.tableData.Rows[i].Cells[2].EditedFormattedValue);
+                    bool uniqueIndex = Convert.ToBoolean(addTable.tableData.Rows[i].Cells[4].EditedFormattedValue);
+                    if (PK) primaryKeysSql += string.Format("`{0}`, ", columnsName);
+                    if (uniqueIndex) OnlyIndex += string.Format("  UNIQUE INDEX `{0}_UNIQUE` (`{0}` ASC),\r\n", columnsName);
+                }
+                //融合sql表达式
+                primaryKeysSql = primaryKeysSql.Substring(0, primaryKeysSql.Length - 2);//删掉后面的空格和逗号
+                if(OnlyIndex != string.Empty)
+                {
+                    OnlyIndex = OnlyIndex.Substring(0, OnlyIndex.Length - 3);//删掉后面的换行符、制表符和逗号
+                    sql += string.Format("  PRIMARY KEY ({0}),\r\n", primaryKeysSql) + OnlyIndex + ");";
+                }
+                else sql += string.Format("  PRIMARY KEY ({0})", primaryKeysSql) + ");";
+
+                sqlStr = sql;
+                
+            }
+            addTable.Dispose();
             //添加数据库表单
             showScript script = new showScript();
-            script.sqlScript.Text = "CREATE TABLE `text`.`new_table` (\r\n" +
-                "  `idnew_table` INT NOT NULL,\r\n" +
-                "  `new_tablecol` VARCHAR(45) NULL,\r\n" +
-                "  PRIMARY KEY (`idnew_table`));";
+            script.sqlScript.Text = sqlStr;
             script.sqlScript.SelectionStart = script.sqlScript.TextLength;
             EditScript(script);
         }
@@ -128,6 +168,8 @@ namespace MySQLDataSet
             showScript script = new showScript();
             script.sqlScript.Text = string.Format("DROP TABLE `{0}`.{1};", select_node.Parent.Text, select_node.Text);
             EditScript(script);
+            DgvSQL.DBshow(Dbcon, database_tree);
+            database_tree.ExpandAll();
         }
 
         //脚本编辑器
@@ -173,32 +215,39 @@ namespace MySQLDataSet
         private void apply_Click(object sender, EventArgs e)
         {
             showScript script = new showScript();
+            //update
             if (DgvSQL.rowsTruct.Count != 0)
             {
                 foreach (var dic in DgvSQL.rowsTruct)
                 {
-                    string columnsName = "";
-                    foreach (var dic2 in dic.Value)
+                    foreach (var dic1 in dic.Value)
                     {
-                        columnsName += string.Format("`{0}` = '{1}', ", dic2.Key, dic2.Value);
+                        string columnsName = "";
+                        foreach (var dic2 in dic1.Value)
+                        {
+                            columnsName += string.Format("`{0}` = '{1}', ", dic2.Key, dic2.Value);
+                        }
+                        columnsName = columnsName.Substring(0, columnsName.Length - 2);
+                        script.sqlScript.AppendText(string.Format("UPDATE `{0}`.`{1}` SET {2} WHERE (`{3}` = '{4}');\r\n", DgvSQL.database_and_table_names[0],
+                            DgvSQL.database_and_table_names[1], columnsName,
+                            DgvSQL.primaryKeys[0], dic1.Key));
                     }
-                    columnsName = columnsName.Substring(0, columnsName.Length - 2);
-                    //DgvSQL.showMessage(messageText, string.Format("index:{0}, update:{1} = {2}", dic.Key, columnsName, rowsVolue), DgvSQL.ErrorCode.Msg);
-                    script.sqlScript.AppendText(string.Format("UPDATE `{0}`.`{1}` SET {2} WHERE (`id` = '{3}');\r\n", DgvSQL.database_and_table_names[0],
-                        DgvSQL.database_and_table_names[1], columnsName, tables_show.Rows[dic.Key].Cells[0].Value));
                 }
             }
+            //insert
             if (DgvSQL.newInsert.Count != 0)
             {
                 foreach (int i in DgvSQL.newInsert)
                 {
-                    if (tables_show.Rows[i].Cells[0].Value != null)
+                    int keys = tables_show.Columns[DgvSQL.primaryKeys[0]].Index;
+                    //检测主键是否为空
+                    if (tables_show.Rows[i].Cells[keys].Value != null)
                     {
                         string columnsName = "";
                         string rowsVolue = "";
                         for (int j = 0; j < tables_show.ColumnCount; j++)
                         {
-                            if(tables_show.Rows[i].Cells[j].Value != null)
+                            if (tables_show.Rows[i].Cells[j].Value != null)
                             {
                                 columnsName += string.Format("`{0}`, ", tables_show.Columns[j].HeaderText);
                                 rowsVolue += string.Format("'{0}', ", tables_show.Rows[i].Cells[j].Value.ToString());
@@ -206,15 +255,29 @@ namespace MySQLDataSet
                         }
                         columnsName = columnsName.Substring(0, columnsName.Length - 2);
                         rowsVolue = rowsVolue.Substring(0, rowsVolue.Length - 2);
-                        script.sqlScript.AppendText(string.Format("INSERT INTO `{0}`.`{1}` ({2}) VALUES ({3})", DgvSQL.database_and_table_names[0],
+                        script.sqlScript.AppendText(string.Format("INSERT INTO `{0}`.`{1}` ({2}) VALUES ({3});\r\n", DgvSQL.database_and_table_names[0],
                             DgvSQL.database_and_table_names[1], columnsName, rowsVolue));
                     }
+                    else
+                    {
+                        DgvSQL.showMessage(messageText, "请检查表单结构", DgvSQL.ErrorCode.Error);
+                    }
                 }
+            }
+            //delete
+            foreach (var delsql in DgvSQL.delRows)
+            {
+                script.sqlScript.AppendText(delsql);
             }
             script.sqlScript.SelectionStart = script.sqlScript.TextLength;
             var resp = EditScript(script);
             if (resp == DialogResult.OK)
+            {
+                //清空数据
                 DgvSQL.rowsTruct.Clear();
+                DgvSQL.newInsert.Clear();
+                DgvSQL.delRows.Clear();
+            }
         }
 
         private void tables_show_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -230,49 +293,77 @@ namespace MySQLDataSet
                 //这一行是否有被修改过
                 if (DgvSQL.rowsTruct.ContainsKey(e.RowIndex))
                 {
+                    //修改过的情况
+                    //字典结构
+                    //索引值->id值->表头->表值
                     //这一个属性值是否有被修改过
-                    if (DgvSQL.rowsTruct[e.RowIndex].ContainsKey(tables_show.Columns[e.ColumnIndex].HeaderText))
+                    foreach (var dic_ in DgvSQL.rowsTruct[e.RowIndex])
                     {
-                        DgvSQL.rowsTruct[e.RowIndex][tables_show.Columns[e.ColumnIndex].HeaderText] = tables_show.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                        if (DgvSQL.rowsTruct[e.RowIndex][dic_.Key].ContainsKey(tables_show.Columns[e.ColumnIndex].HeaderText))
+                        {
+                            DgvSQL.rowsTruct[e.RowIndex][dic_.Key][tables_show.Columns[e.ColumnIndex].HeaderText] =
+                                tables_show.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                        }
+                        //否则添加这一行的修改记录
+                        else
+                        {
+                            DgvSQL.rowsTruct[e.RowIndex][dic_.Key].Add(tables_show.Columns[e.ColumnIndex].HeaderText,
+                                tables_show.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                        }
                     }
-                    //否则添加这一行的修改记录
-                    else
-                    {
-                        DgvSQL.rowsTruct[e.RowIndex].Add(tables_show.Columns[e.ColumnIndex].HeaderText,
-                            tables_show.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                    }
+
                 }
                 //否则添加新一行的修改记录
                 else
                 {
-                    Dictionary<string, string> keyValuePairs = new Dictionary<string, string>() {
-                            {tables_show.Columns[e.ColumnIndex].HeaderText,
-                                tables_show.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString()}
-                        };
-                    DgvSQL.rowsTruct.Add(e.RowIndex, keyValuePairs);
+                    Dictionary<string, Dictionary<string, string>> idToVolue = new Dictionary<string, Dictionary<string, string>>()
+                    {
+                        //嵌套一层，id+表结构
+                        {DgvSQL.nowEditID, new Dictionary<string, string>(){
+                            //第二层，表头表值
+                            { tables_show.Columns[e.ColumnIndex].HeaderText,
+                            tables_show.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString()}
+                        } }
+                    };
+                    DgvSQL.rowsTruct.Add(e.RowIndex, idToVolue);
                 }
             }
             else if (tables_show.Rows.Count > DgvSQL.rowsCount)
             {
-                DgvSQL.showMessage(messageText, string.Format("增加的{0}", e.RowIndex), DgvSQL.ErrorCode.Msg);
+                //是否已经存在该行
+                if (DgvSQL.newInsert.IndexOf(e.RowIndex) < 0)
+                {
+                    DgvSQL.newInsert.Add(e.RowIndex);
+                }
             }
         }
         //*************表格右键操作*******************
         private void tables_show_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if(e.Button == MouseButtons.Right)
+            if (e.RowIndex >= 0 && e.Button == MouseButtons.Left)
             {
-                if(e.RowIndex > 0)
+                //获取主键索引
+                int keys = tables_show.Columns[DgvSQL.primaryKeys[0]].Index;
+                var columnVolue = tables_show.Rows[e.RowIndex].Cells[keys].Value;
+                if (columnVolue != null)
                 {
-                    tables_show.ContextMenuStrip = table_Rclick;
+                    //获取主键值
+                    DgvSQL.nowEditID = columnVolue.ToString();
                 }
+            }
+            if (e.Button == MouseButtons.Right)
+            {
+                tables_show.ContextMenuStrip = table_Rclick;
             }
         }
 
         private void freash_grid_Click(object sender, EventArgs e)
         {
-            DgvSQL.UpdataGrid(tables_show, string.Format("SELECT * FROM {0}.{1}", DgvSQL.database_and_table_names[0], 
+            DgvSQL.UpdataGrid(tables_show, string.Format("SELECT * FROM {0}.{1}", DgvSQL.database_and_table_names[0],
                 DgvSQL.database_and_table_names[1]), Dbcon, messageText);
+            DgvSQL.GetKeysName(Dbcon);
+            //更换主键行颜色
+            DgvSQL.changeColor(tables_show);
             //表格状态更新
             tables_show.ReadOnly = false;
             tables_show.AllowUserToAddRows = true;
@@ -280,10 +371,30 @@ namespace MySQLDataSet
 
         private void delete_Rows_Click(object sender, EventArgs e)
         {
-
+            try
+            {
+                int rmIndex = tables_show.SelectedRows[0].Index;
+                if (DgvSQL.newInsert.IndexOf(rmIndex) > -1)
+                {
+                    DgvSQL.newInsert.Remove(rmIndex);
+                }
+                else
+                {
+                    int keys = tables_show.Columns[DgvSQL.primaryKeys[0]].Index;
+                    DgvSQL.delRows.Add(string.Format("DELETE FROM `{0}`.`{1}` WHERE (`{2}` = '{3}');\r\n", DgvSQL.database_and_table_names[0],
+                        DgvSQL.database_and_table_names[1], tables_show.Columns[0].HeaderText, tables_show.SelectedRows[0].Cells[keys].Value));
+                }
+                tables_show.Rows.Remove(tables_show.SelectedRows[0]);
+                //刷新当前行数
+                DgvSQL.rowsCount = tables_show.Rows.Count;
+            }
+            catch (Exception ex)
+            {
+                DgvSQL.showMessage(messageText, ex.Message, DgvSQL.ErrorCode.Error);
+            }
         }
         //********************************************
-        
-        
+
+
     }
 }

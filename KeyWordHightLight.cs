@@ -37,10 +37,15 @@ namespace MySQLDataSet
             list.Add("TABLE");
             list.Add("PRIMARY");
             list.Add("key");
+            list.Add("keys");
             list.Add("SCHEMA");
             list.Add("alter");
             list.Add("after");
-            //list.Add("");
+            list.Add("VALUES");
+            list.Add("UNSIGNED");
+            list.Add("UNIQUE");
+            list.Add("INDEX");
+            list.Add("ASC");
             return list;
         }
         public static string[] ExcludeList = { " ", ";", ",", "(", ")" };
@@ -112,6 +117,10 @@ namespace MySQLDataSet
             else if (command.IndexOf("select", StringComparison.OrdinalIgnoreCase) > -1)
             {
                 DgvSQL.UpdataGrid(tables_show, command, Dbcon, messageText);
+                //更新主键名称
+                DgvSQL.GetKeysName(Dbcon);
+                //更换主键行颜色
+                DgvSQL.changeColor(tables_show);
                 tables_show.ReadOnly = false;
                 tables_show.AllowUserToAddRows = true;
             }
