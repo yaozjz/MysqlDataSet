@@ -26,10 +26,6 @@ namespace MySQLDataSet
 
         private void okbt_Click(object sender, EventArgs e)
         {
-            if (passwd_text.Text == "")
-            {
-                MessageBox.Show("请检查是否有空项！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             try
             {
                 if (saveBt.Checked)

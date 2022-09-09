@@ -106,7 +106,7 @@ namespace MySQLDataSet
             }
             else
                 DgvSQL.DBshow(Dbcon, database_tree);
-            database_tree.ExpandAll();
+            database_tree.Nodes[0].Expand();
         }
 
         private void add_table_Click(object sender, EventArgs e)
@@ -169,7 +169,7 @@ namespace MySQLDataSet
             script.sqlScript.Text = string.Format("DROP TABLE `{0}`.{1};", select_node.Parent.Text, select_node.Text);
             EditScript(script);
             DgvSQL.DBshow(Dbcon, database_tree);
-            database_tree.ExpandAll();
+            database_tree.Nodes[0].Expand();
         }
 
         //脚本编辑器
@@ -287,7 +287,7 @@ namespace MySQLDataSet
             //大于原来的行数为插入新一行数据，并更新现在的行数
             //行数不变的值更新表示为参数更新，记录所修改的行索引（RowsIndex）以及列索引（columnsIndex）
             //更新的数据统一到应用按钮所在行数进行统计，并生成SQL语句。
-            if (tables_show.Rows.Count == DgvSQL.rowsCount)
+            if (tables_show.Rows.Count == DgvSQL.rowsCount && DgvSQL.newInsert.IndexOf(e.RowIndex) < 0)//判断是否为插入行
             {
                 //数据更新
                 //这一行是否有被修改过
@@ -334,6 +334,8 @@ namespace MySQLDataSet
                 if (DgvSQL.newInsert.IndexOf(e.RowIndex) < 0)
                 {
                     DgvSQL.newInsert.Add(e.RowIndex);
+                    //更新行数
+                    DgvSQL.rowsCount = tables_show.Rows.Count;
                 }
             }
         }
