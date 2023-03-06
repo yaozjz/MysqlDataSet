@@ -40,9 +40,15 @@ namespace MySQLDataSet
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.菜单ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.添加数据库ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveGridBt = new System.Windows.Forms.ToolStripMenuItem();
             this.退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.addDB = new System.Windows.Forms.ToolStripButton();
+            this.freash_data = new System.Windows.Forms.ToolStripButton();
+            this.saveGrid = new System.Windows.Forms.ToolStripButton();
+            this.SqlScriptEdit = new System.Windows.Forms.ToolStripButton();
+            this.closeBt = new System.Windows.Forms.ToolStripButton();
             this.database_tree = new System.Windows.Forms.TreeView();
             this.backsplit = new System.Windows.Forms.SplitContainer();
             this.leftSplit = new System.Windows.Forms.SplitContainer();
@@ -70,13 +76,7 @@ namespace MySQLDataSet
             this.table_Rclick = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.freash_grid = new System.Windows.Forms.ToolStripMenuItem();
             this.delete_Rows = new System.Windows.Forms.ToolStripMenuItem();
-            this.addDB = new System.Windows.Forms.ToolStripButton();
-            this.SqlScriptEdit = new System.Windows.Forms.ToolStripButton();
-            this.closeBt = new System.Windows.Forms.ToolStripButton();
-            this.saveGrid = new System.Windows.Forms.ToolStripButton();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
-            this.freash_data = new System.Windows.Forms.ToolStripButton();
-            this.saveGridBt = new System.Windows.Forms.ToolStripMenuItem();
             this.msdb.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -105,6 +105,7 @@ namespace MySQLDataSet
             // 
             // msdb
             // 
+            this.msdb.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.msdb.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.刷新ToolStripMenuItem,
             this.登录数据库ToolStripMenuItem});
@@ -127,6 +128,7 @@ namespace MySQLDataSet
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.菜单ToolStripMenuItem,
             this.关于ToolStripMenuItem});
@@ -149,13 +151,19 @@ namespace MySQLDataSet
             // 添加数据库ToolStripMenuItem
             // 
             this.添加数据库ToolStripMenuItem.Name = "添加数据库ToolStripMenuItem";
-            this.添加数据库ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.添加数据库ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.添加数据库ToolStripMenuItem.Text = "添加数据库";
+            // 
+            // saveGridBt
+            // 
+            this.saveGridBt.Name = "saveGridBt";
+            this.saveGridBt.Size = new System.Drawing.Size(136, 22);
+            this.saveGridBt.Text = "保存为xlsx";
             // 
             // 退出ToolStripMenuItem
             // 
             this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.退出ToolStripMenuItem.Text = "退出";
             // 
             // 关于ToolStripMenuItem
@@ -166,6 +174,7 @@ namespace MySQLDataSet
             // 
             // toolStrip1
             // 
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addDB,
             this.freash_data,
@@ -174,9 +183,59 @@ namespace MySQLDataSet
             this.closeBt});
             this.toolStrip1.Location = new System.Drawing.Point(0, 25);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(804, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(804, 27);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // addDB
+            // 
+            this.addDB.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.addDB.Image = global::MySQLDataSet.Properties.Resources.add;
+            this.addDB.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addDB.Name = "addDB";
+            this.addDB.Size = new System.Drawing.Size(24, 24);
+            this.addDB.Text = "addDB";
+            this.addDB.ToolTipText = "添加数据库";
+            this.addDB.Click += new System.EventHandler(this.addDB_Click);
+            // 
+            // freash_data
+            // 
+            this.freash_data.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.freash_data.Image = global::MySQLDataSet.Properties.Resources.刷新;
+            this.freash_data.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.freash_data.Name = "freash_data";
+            this.freash_data.Size = new System.Drawing.Size(24, 24);
+            this.freash_data.Text = "刷新数据库";
+            this.freash_data.Click += new System.EventHandler(this.fresh_db_Click);
+            // 
+            // saveGrid
+            // 
+            this.saveGrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saveGrid.Image = global::MySQLDataSet.Properties.Resources.saveBlue;
+            this.saveGrid.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveGrid.Name = "saveGrid";
+            this.saveGrid.Size = new System.Drawing.Size(24, 24);
+            this.saveGrid.Text = "保存表格";
+            // 
+            // SqlScriptEdit
+            // 
+            this.SqlScriptEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.SqlScriptEdit.Image = global::MySQLDataSet.Properties.Resources.write;
+            this.SqlScriptEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.SqlScriptEdit.Name = "SqlScriptEdit";
+            this.SqlScriptEdit.Size = new System.Drawing.Size(24, 24);
+            this.SqlScriptEdit.Text = "脚本编写";
+            this.SqlScriptEdit.Click += new System.EventHandler(this.SqlScriptEdit_Click);
+            // 
+            // closeBt
+            // 
+            this.closeBt.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.closeBt.Image = global::MySQLDataSet.Properties.Resources.exit;
+            this.closeBt.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.closeBt.Name = "closeBt";
+            this.closeBt.Size = new System.Drawing.Size(24, 24);
+            this.closeBt.Text = "退出";
+            this.closeBt.Click += new System.EventHandler(this.closeBt_Click);
             // 
             // database_tree
             // 
@@ -192,14 +251,14 @@ namespace MySQLDataSet
             treeNode1.Text = "数据库";
             this.database_tree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1});
-            this.database_tree.Size = new System.Drawing.Size(123, 368);
+            this.database_tree.Size = new System.Drawing.Size(123, 366);
             this.database_tree.TabIndex = 1;
             this.database_tree.MouseClick += new System.Windows.Forms.MouseEventHandler(this.database_tree_MouseClick);
             // 
             // backsplit
             // 
             this.backsplit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.backsplit.Location = new System.Drawing.Point(0, 50);
+            this.backsplit.Location = new System.Drawing.Point(0, 52);
             this.backsplit.Name = "backsplit";
             // 
             // backsplit.Panel1
@@ -209,7 +268,7 @@ namespace MySQLDataSet
             // backsplit.Panel2
             // 
             this.backsplit.Panel2.Controls.Add(this.rightSplit);
-            this.backsplit.Size = new System.Drawing.Size(804, 506);
+            this.backsplit.Size = new System.Drawing.Size(804, 504);
             this.backsplit.SplitterDistance = 123;
             this.backsplit.TabIndex = 6;
             // 
@@ -228,8 +287,8 @@ namespace MySQLDataSet
             // 
             this.leftSplit.Panel2.Controls.Add(this.statusText);
             this.leftSplit.Panel2.Controls.Add(this.statusStrip1);
-            this.leftSplit.Size = new System.Drawing.Size(123, 506);
-            this.leftSplit.SplitterDistance = 368;
+            this.leftSplit.Size = new System.Drawing.Size(123, 504);
+            this.leftSplit.SplitterDistance = 366;
             this.leftSplit.TabIndex = 0;
             // 
             // statusText
@@ -246,6 +305,7 @@ namespace MySQLDataSet
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusBt});
             this.statusStrip1.Location = new System.Drawing.Point(0, 112);
@@ -277,8 +337,8 @@ namespace MySQLDataSet
             // 
             this.rightSplit.Panel2.Controls.Add(this.messageText);
             this.rightSplit.Panel2.Controls.Add(this.statusStrip2);
-            this.rightSplit.Size = new System.Drawing.Size(677, 506);
-            this.rightSplit.SplitterDistance = 322;
+            this.rightSplit.Size = new System.Drawing.Size(677, 504);
+            this.rightSplit.SplitterDistance = 320;
             this.rightSplit.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -294,7 +354,7 @@ namespace MySQLDataSet
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(677, 322);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(677, 320);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // tables_show
@@ -309,7 +369,7 @@ namespace MySQLDataSet
             this.tables_show.Margin = new System.Windows.Forms.Padding(0);
             this.tables_show.Name = "tables_show";
             this.tables_show.RowTemplate.Height = 23;
-            this.tables_show.Size = new System.Drawing.Size(677, 297);
+            this.tables_show.Size = new System.Drawing.Size(677, 295);
             this.tables_show.TabIndex = 0;
             this.tables_show.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.tables_show_CellMouseUp);
             this.tables_show.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.tables_show_CellValueChanged);
@@ -319,7 +379,7 @@ namespace MySQLDataSet
             this.panel1.BackColor = System.Drawing.SystemColors.Window;
             this.panel1.Controls.Add(this.apply);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 297);
+            this.panel1.Location = new System.Drawing.Point(0, 295);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(677, 25);
@@ -408,6 +468,7 @@ namespace MySQLDataSet
             // 
             // statusStrip2
             // 
+            this.statusStrip2.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.messageBt});
             this.statusStrip2.Location = new System.Drawing.Point(0, 158);
@@ -426,6 +487,7 @@ namespace MySQLDataSet
             // 
             // db_cms
             // 
+            this.db_cms.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.db_cms.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.刷新数据库ToolStripMenuItem,
             this.add_table});
@@ -448,6 +510,7 @@ namespace MySQLDataSet
             // 
             // tableRightClick
             // 
+            this.tableRightClick.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.tableRightClick.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.刷新ToolStripMenuItem1,
             this.添加表单ToolStripMenuItem,
@@ -478,6 +541,7 @@ namespace MySQLDataSet
             // 
             // table_Rclick
             // 
+            this.table_Rclick.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.table_Rclick.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.freash_grid,
             this.delete_Rows});
@@ -498,46 +562,6 @@ namespace MySQLDataSet
             this.delete_Rows.Text = "删除当前行";
             this.delete_Rows.Click += new System.EventHandler(this.delete_Rows_Click);
             // 
-            // addDB
-            // 
-            this.addDB.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.addDB.Image = global::MySQLDataSet.Properties.Resources.add;
-            this.addDB.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addDB.Name = "addDB";
-            this.addDB.Size = new System.Drawing.Size(23, 22);
-            this.addDB.Text = "addDB";
-            this.addDB.ToolTipText = "添加数据库";
-            this.addDB.Click += new System.EventHandler(this.addDB_Click);
-            // 
-            // SqlScriptEdit
-            // 
-            this.SqlScriptEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.SqlScriptEdit.Image = global::MySQLDataSet.Properties.Resources.write;
-            this.SqlScriptEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.SqlScriptEdit.Name = "SqlScriptEdit";
-            this.SqlScriptEdit.Size = new System.Drawing.Size(23, 22);
-            this.SqlScriptEdit.Text = "脚本编写";
-            this.SqlScriptEdit.Click += new System.EventHandler(this.SqlScriptEdit_Click);
-            // 
-            // closeBt
-            // 
-            this.closeBt.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.closeBt.Image = global::MySQLDataSet.Properties.Resources.exit;
-            this.closeBt.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.closeBt.Name = "closeBt";
-            this.closeBt.Size = new System.Drawing.Size(23, 22);
-            this.closeBt.Text = "退出";
-            this.closeBt.Click += new System.EventHandler(this.closeBt_Click);
-            // 
-            // saveGrid
-            // 
-            this.saveGrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.saveGrid.Image = global::MySQLDataSet.Properties.Resources.saveBlue;
-            this.saveGrid.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.saveGrid.Name = "saveGrid";
-            this.saveGrid.Size = new System.Drawing.Size(23, 22);
-            this.saveGrid.Text = "保存表格";
-            // 
             // dataGridViewImageColumn1
             // 
             this.dataGridViewImageColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -547,22 +571,6 @@ namespace MySQLDataSet
             this.dataGridViewImageColumn1.ReadOnly = true;
             this.dataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // freash_data
-            // 
-            this.freash_data.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.freash_data.Image = global::MySQLDataSet.Properties.Resources.刷新;
-            this.freash_data.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.freash_data.Name = "freash_data";
-            this.freash_data.Size = new System.Drawing.Size(23, 22);
-            this.freash_data.Text = "刷新数据库";
-            this.freash_data.Click += new System.EventHandler(this.fresh_db_Click);
-            // 
-            // saveGridBt
-            // 
-            this.saveGridBt.Name = "saveGridBt";
-            this.saveGridBt.Size = new System.Drawing.Size(180, 22);
-            this.saveGridBt.Text = "保存为xlsx";
             // 
             // mainForm
             // 
